@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Canteen Website Home</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.app{--bg:#F6F7F9;--card:#FFFFFF;--line:#E3E6EA;--text:#1B1F24;--muted:#4A525C;--atext:#C2410C;--soft:#F1F3F5;--good:#146C43;--goodbg:#E3F5EB;font-family:Inter,sans-serif;background:var(--bg);color:var(--text);min-height:1000px;box-sizing:border-box}
+.app[data-theme="dark"]{--bg:#12151A;--card:#1D2128;--line:#2E343D;--text:#F2F4F6;--muted:#A9B1BB;--atext:#FF8A57;--soft:#262B33;--good:#6FDCA1;--goodbg:#1F3A2C}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 48px;background:var(--card);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:40px 48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;background:var(--soft);border-radius:10px}
+.ghost{min-height:44px;padding:0 16px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;font:500 14px Inter,sans-serif;cursor:pointer}
+.cta{min-height:44px;padding:0 20px;border:0;background:#C2410C;color:#FFFFFF;border-radius:10px;font:600 14px Inter,sans-serif;cursor:pointer}
+.tile{text-align:left;display:flex;flex-direction:column;gap:8px;padding:24px;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:16px;font-family:Inter,sans-serif;cursor:pointer;min-height:140px}
+.tile:hover{border-color:#C2410C}
+.muted{color:var(--muted);font-size:14px}
+h2{margin:0}
+</style>
+</helmet>
+<div class="app" data-theme="{{theme}}">
+<header class="hd">
+<button class="ghost" onClick="{{goHome}}" style="border:0;font-weight:700;font-size:20px;display:flex;align-items:center;gap:10px;padding:0"><span style="width:28px;height:28px;border-radius:8px;background:#C2410C;display:inline-block"></span>kariya</button>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+<button class="ghost">Main Block Canteen ▾</button>
+<button class="ghost" onClick="{{toggleTheme}}" aria-label="Switch light or dark mode">{{themeLabel}}</button>
+<button class="cta" onClick="{{goPreorder}}">My order (2)</button>
+</div>
+</header>
+
+<sc-if value="{{isHome}}" hint-placeholder-val="{{true}}">
+<main class="wrap" style="display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:16px;max-width:640px">
+<h1 style="margin:0;font-size:52px;line-height:1.08;letter-spacing:-0.02em">Skip the queue.<br>Eat smarter.</h1>
+<p style="margin:0;font-size:18px;line-height:1.5;color:var(--muted)">Pre-order, compare prices and check reviews before you walk in. Pick what you need below.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+<sc-for list="{{tiles}}" as="t" hint-placeholder-count="6">
+<button class="tile" onClick="{{t.go}}"><strong style="font-size:18px">{{t.title}}</strong><span class="muted">{{t.desc}}</span><span style="margin-top:auto;font-weight:600;font-size:14px;color:var(--atext)">Open →</span></button>
+</sc-for>
+</div>
+</main>
+</sc-if>
+
+<sc-if value="{{notHome}}" hint-placeholder-val="{{false}}">
+<main class="wrap" style="display:flex;flex-direction:column;gap:20px;max-width:760px">
+<button class="ghost" onClick="{{goHome}}" style="align-self:flex-start">← Back to home</button>
+
+<sc-if value="{{isMenu}}" hint-placeholder-val="{{false}}"><div class="card" style="display:flex;flex-direction:column;gap:12px"><h2>Menu</h2><p class="muted" style="margin:0">Today at Main Block (sample items)</p>
+<div class="row"><span>Masala Dosa</span><strong>₹40</strong></div><div class="row"><span>Veg Biryani</span><strong>₹70</strong></div><div class="row"><span>Veg Fried Rice</span><strong>₹55</strong></div><div class="row"><span>Filter Coffee</span><strong>₹15</strong></div></div></sc-if>
+
+<sc-if value="{{isPreorder}}" hint-placeholder-val="{{false}}"><div class="card" style="display:flex;flex-direction:column;gap:12px"><h2>Pre-order</h2><p class="muted" style="margin:0">Your food will be ready when you reach the canteen.</p>
+<div class="row"><span>Masala Dosa × 1</span><strong>₹40</strong></div><div class="row"><span>Filter Coffee × 1</span><strong>₹15</strong></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="ghost">In 10 min</button><button class="ghost">In 20 min</button><button class="ghost">In 30 min</button></div>
+<div class="row"><strong>Total</strong><strong>₹55</strong></div><button class="cta">Confirm pre-order</button></div></sc-if>
+
+<sc-if value="{{isCompare}}" hint-placeholder-val="{{false}}"><div class="card" style="display:flex;flex-direction:column;gap:12px"><h2>Compare canteens</h2><p class="muted" style="margin:0">Masala Dosa (sample prices)</p>
+<div class="row" style="background:var(--goodbg)"><span>Main Block</span><strong style="color:var(--good)">₹40 · Cheapest</strong></div><div class="row"><span>Block B</span><strong>₹45</strong></div><div class="row"><span>Library Café</span><strong>₹50</strong></div></div></sc-if>
+
+<sc-if value="{{isReviews}}" hint-placeholder-val="{{false}}"><div class="card" style="display:flex;flex-direction:column;gap:12px"><h2>Food reviews</h2><p class="muted" style="margin:0">Only students who ordered an item can review it.</p>
+<div class="row"><span>Masala Dosa</span><strong>★ 4.5</strong></div><div class="row"><span>Veg Biryani</span><strong>★ 4.2</strong></div><div class="row"><span>Filter Coffee</span><strong>★ 4.6</strong></div></div></sc-if>
+
+<sc-if value="{{isGuru}}" hint-placeholder-val="{{false}}"><div class="card" style="display:flex;flex-direction:column;gap:12px"><h2>AI Guru</h2>
+<div style="align-self:flex-end;max-width:80%;background:#C2410C;color:#FFFFFF;padding:12px 16px;border-radius:14px 14px 4px 14px">Something filling under ₹60?</div>
+<div style="align-self:flex-start;max-width:85%;background:var(--soft);padding:12px 16px;border-radius:14px 14px 14px 4px;line-height:1.45">Try the Veg Fried Rice at Main Block for ₹55. Wait is about 8 minutes, so pre-book now.</div>
+<div style="display:flex;gap:10px"><input aria-label="Ask AI Guru" placeholder="Ask for a suggestion…" style="flex:1;min-height:46px;padding:0 14px;border:1px solid var(--line);background:var(--soft);color:var(--text);border-radius:10px;font:400 15px Inter,sans-serif;box-sizing:border-box"><button class="cta">Send</button></div></div></sc-if>
+
+<sc-if value="{{isDash}}" hint-placeholder-val="{{false}}"><div class="card" style="display:flex;flex-direction:column;gap:12px"><h2>Staff dashboard</h2><p class="muted" style="margin:0">Sales, orders and stock (sample data)</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px"><div class="row" style="flex-direction:column;align-items:flex-start"><span class="muted">Today's sales</span><strong style="font-size:24px">₹[ ]</strong></div><div class="row" style="flex-direction:column;align-items:flex-start"><span class="muted">Orders</span><strong style="font-size:24px">[ ]</strong></div><div class="row" style="flex-direction:column;align-items:flex-start"><span class="muted">Top item</span><strong style="font-size:24px">Masala Dosa</strong></div></div>
+<div class="row"><span>Stock: Rice</span><strong style="color:var(--good)">OK</strong></div><div class="row"><span>Stock: Coffee powder</span><strong style="color:var(--atext)">Low</strong></div></div></sc-if>
+</main>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Theme"},"$preview":{"width":1280,"height":1000}}'>
+class Component extends DCLogic {
+  state = { page: 'home', dark: null };
+  renderVals() {
+    const p = this.state.page;
+    const dark = this.state.dark === null ? !!this.props.dark : this.state.dark;
+    const go = (x) => () => this.setState({ page: x });
+    const tiles = [
+      { title: 'Menu', desc: 'See every item and its price.', go: go('menu') },
+      { title: 'Pre-order', desc: 'Book now, collect without the queue.', go: go('preorder') },
+      { title: 'Compare canteens', desc: 'Find where the same item is cheaper.', go: go('compare') },
+      { title: 'Reviews', desc: 'Check if the food is good first.', go: go('reviews') },
+      { title: 'AI Guru', desc: 'Get food suggestions and insights.', go: go('guru') },
+      { title: 'Staff dashboard', desc: 'Sales, orders and stock.', go: go('dash') }
+    ];
+    return {
+      theme: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Light mode' : 'Dark mode',
+      toggleTheme: () => this.setState({ dark: !dark }),
+      goHome: go('home'), goPreorder: go('preorder'),
+      isHome: p === 'home', notHome: p !== 'home',
+      isMenu: p === 'menu', isPreorder: p === 'preorder', isCompare: p === 'compare',
+      isReviews: p === 'reviews', isGuru: p === 'guru', isDash: p === 'dash',
+      tiles
+    };
+  }
+}
+</script>
+</body>
+</html>
